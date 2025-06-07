@@ -158,10 +158,10 @@ export async function routePartykitRequest<
         console.warn(
           "You appear to be migrating a PartyKit project to PartyServer."
         );
-        console.warn(`PartyServer doesn't have a "main" party by default. Try adding this to your PartySocket client:\n 
+        console.warn(`PartyServer doesn't have a "main" party by default. Try adding this to your PartySocket client:\n
 party: "${camelCaseToKebabCase(Object.keys(map)[0])}"`);
       } else {
-        console.error(`The url ${req.url} does not match any server namespace. 
+        console.error(`The url ${req.url} does not match any server namespace.
 Did you forget to add a durable object binding to the class in your wrangler.toml?`);
       }
     }
@@ -218,7 +218,8 @@ Did you forget to add a durable object binding to the class in your wrangler.tom
 
 export class Server<Env = unknown> extends DurableObject<Env> {
   static options = {
-    hibernate: false
+    hibernate: false,
+    removeDuplicateConnectionId:false,
   };
 
   #status: "zero" | "starting" | "started" = "zero";
@@ -340,7 +341,7 @@ Did you try connecting directly to this Durable Object? Try using getServerByNam
         connection = this.#connectionManager.accept(connection, {
           tags,
           server: this.name
-        });
+        }, this.#ParentClass.options.removeDuplicateConnectionId);
 
         if (!this.#ParentClass.options.hibernate) {
           this.#attachSocketEventHandlers(connection);
