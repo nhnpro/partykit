@@ -196,8 +196,7 @@ export interface ConnectionManager {
   getConnections<TState>(tag?: string): IterableIterator<Connection<TState>>;
   accept(
     connection: Connection,
-    options: { tags: string[]; server: string },
-    removeDuplicate?: boolean
+    options: { tags: string[]; server: string }
   ): Connection;
 }
 
@@ -235,10 +234,10 @@ export class InMemoryConnectionManager<TState> implements ConnectionManager {
     }
   }
 
-  accept(connection: Connection, options: { tags: string[]; server: string },removeDuplicate?: boolean) {
+  accept(connection: Connection, options: { tags: string[]; server: string }) {
     connection.accept();
     //TODO: if exist connection with same id, disconnect current connection
-    if (removeDuplicate && this.#connections.has(connection.id)) {
+    if (this.#connections.has(connection.id)) {
       this.#connections.get(connection.id)?.close();
     }
 
@@ -287,7 +286,7 @@ export class HibernatingConnectionManager<TState> implements ConnectionManager {
     return new HibernatingConnectionIterator<T>(this.controller, tag);
   }
 
-  accept(connection: Connection, options: { tags: string[]; server: string },removeDuplicate?: boolean) {
+  accept(connection: Connection, options: { tags: string[]; server: string }) {
     // dedupe tags in case user already provided id tag
     const tags = [
       connection.id,

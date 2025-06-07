@@ -219,7 +219,7 @@ Did you forget to add a durable object binding to the class in your wrangler.tom
 export class Server<Env = unknown> extends DurableObject<Env> {
   static options = {
     hibernate: false,
-    removeDuplicateConnectionId:false,
+    removeDuplicateConnectionId: false
   };
 
   #status: "zero" | "starting" | "started" = "zero";
@@ -341,7 +341,7 @@ Did you try connecting directly to this Durable Object? Try using getServerByNam
         connection = this.#connectionManager.accept(connection, {
           tags,
           server: this.name
-        }, this.#ParentClass.options.removeDuplicateConnectionId);
+        });
 
         if (!this.#ParentClass.options.hibernate) {
           this.#attachSocketEventHandlers(connection);
